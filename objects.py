@@ -1,5 +1,6 @@
 import sys
 import random
+import time
 
 roomType = {
     "classroom":[0.5,0.5],
@@ -50,21 +51,50 @@ class Vector:
         self.x += self.dx*times
         self.y += self.dy*times
 
-class Student(Vector):
+class Person(Vector):
+    def __init__(self):
+        super().__init__()
+        self.lastChat = 0
+        self.chatPeriod = 4
+        self.nextChat = time.time()+self.chatPeriod
+
+    def GetLastChat(self):
+        return self.lastChat
+
+    def GetNextChat(self):
+        return self.nextChat
+
+    def UpdateNextChat(self):
+        self.nextChat += self.chatPeriod
+
+    def GetChatPeriod(self):
+        return self.chatPeriod
+    
+class Student(Person):
     def __init__(self,interest,engagement,uniqueID="unassigned"):
         super().__init__()
         self.interest = interest
         self.engagement = engagement
         self.uniqueID = uniqueID
         self.type = "Student"
+        self.dInterest = 0
         
     def setID(self,ID):
         self.uniqueID = ID
-    
 
-class Cell:
-    def __init__(self,pPosition,pObject):
-        pass
+    def setDInterest(self,dInterest):
+        if self.uniqueID == 1:
+            print("Current d:{} adding:{}".format(self.dInterest,dInterest))
+        self.dInterest += dInterest
+
+    def updateInterest(self):
+        self.interest += self.dInterest
+        if self.interest<0.1:
+            self.interest = 0.1
+        if self.interest>1:
+            self.interest = 1
+        self.dInterest = 0
+        
 
 class Classroom:
     #objectList = []
